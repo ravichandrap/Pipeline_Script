@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    stages {
+        stage('Git-Checkout') {
+            steps {
+                echo "Checking out from Git Repo successfully!!";
+                git 'https://github.com/simplilearn-github/Pipeline_Script.git'
+            }
+        }
+        stage('Compile') {
+            steps {
+                echo "Compiled successfully!!";
+                build 'Build.bat'
+            }
+        }
+
+        stage('JUnit') {
+            steps {
+                echo "JUnit Test successfully!!";
+                build 'Unit.bat'
+            }
+        }
+
+        stage('Quality-Gate') {
+            steps {
+                echo "SonarQube Quality Gate passed successfully!!";
+                build 'Quality.bat'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploy successfully!!";
+                build 'Deploy.bat'
+            }
+        }
+    }
+    post {
+        always {
+            echo "This will always run"
+        }
+        success {
+            echo "This is run only successful"
+        }
+        failure {
+            echo "This will run only failed!"
+        }
+        unstable {
+            echo "This will run only if the run was marked as unstable"
+        }
+        changed {
+            echo "This will run only if the state of the Pipeline has changed"
+            echo "For Example, if the Pipeline was previously failing but is now successful"
+        }
+    }
+}
